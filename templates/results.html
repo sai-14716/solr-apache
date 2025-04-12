@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { color: #333; }
+        .result { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+        .result h3 { margin-top: 0; }
+        a { text-decoration: none; color: #4285F4; }
+    </style>
+</head>
+<body>
+    <h1>Results for "{{ query }}"</h1>
+    <a href="/">Back to Home</a>
+
+    {% if results %}
+        {% for doc in results %}
+            <div class="result">
+                <h3>{{ doc.id }}</h3>
+                <p>{{ doc.content_txt[:500] }}...</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>

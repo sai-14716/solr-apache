@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Search Engine</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+        h2 { margin-top: 40px; }
+        form { margin-bottom: 20px; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 15px; background-color: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #3367D6; }
+    </style>
+</head>
+<body>
+    <h1>Cloud-Based Text Search Engine</h1>
+
+    <h2>Upload Document</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload and Index</button>
+    </form>
+
+    <h2>Crawl URLs</h2>
+    <form id="crawl-form">
+        <input type="text" name="urls" placeholder="Enter comma-separated URLs" required>
+        <button type="submit">Crawl and Index</button>
+    </form>
+
+    <h2>Search Documents</h2>
+    <form action="/search" method="GET">
+        <input type="text" name="q" placeholder="Enter search query" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <script>
+        document.getElementById('crawl-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const urlInput = e.target.elements.urls.value;
+            const urls = urlInput.split(',').map(url => url.trim());
+            const res = await fetch('/crawl', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ urls })
+            });
+            const text = await res.text();
+            alert(text);
+        });
+    </script>
+</body>
+</html>
