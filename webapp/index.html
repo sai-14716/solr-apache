@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solr Search Engine</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Solr Search Engine</h1>
+            <p class="subtitle">High-performance distributed search powered by Solr</p>
+        </header>
+
+        <div class="search-box">
+            <form id="search-form">
+                <div class="search-input-container">
+                    <input type="text" id="search-input" placeholder="Enter your search query..." autocomplete="off">
+                    <div id="suggestions" class="suggestions-container"></div>
+                </div>
+                <button type="submit" id="search-button">Search</button>
+            </form>
+        </div>
+
+        <div class="results-container">
+            <div class="facets-container">
+                <h3>Filter Results</h3>
+                <div id="category-facets" class="facet-group">
+                    <h4>Categories</h4>
+                    <div class="facet-items"></div>
+                </div>
+                <div id="tags-facets" class="facet-group">
+                    <h4>Tags</h4>
+                    <div class="facet-items"></div>
+                </div>
+            </div>
+
+            <div class="results-content">
+                <div id="results-stats"></div>
+                <div id="search-results"></div>
+                <div id="pagination"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Solr Search Engine Project - Performance Benchmark Version</p>
+            <p>Response Time: <span id="response-time">0</span> ms</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

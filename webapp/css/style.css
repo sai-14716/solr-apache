@@ -1,0 +1,251 @@
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    padding: 40px 0 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Search Box Styles */
+.search-box {
+    margin: 20px auto 30px;
+    max-width: 800px;
+}
+
+#search-form {
+    display: flex;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.search-input-container {
+    position: relative;
+    flex-grow: 1;
+}
+
+#search-input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+}
+
+#search-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#search-button:hover {
+    background-color: #2980b9;
+}
+
+/* Suggestion Dropdown */
+.suggestions-container {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Results Container */
+.results-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.facets-container {
+    width: 250px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    align-self: flex-start;
+}
+
+.facet-group {
+    margin-bottom: 20px;
+}
+
+.facet-group h4 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.facet-item {
+    margin-bottom: 8px;
+}
+
+.facet-item label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.facet-item input {
+    margin-right: 8px;
+}
+
+.facet-count {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.results-content {
+    flex-grow: 1;
+}
+
+#results-stats {
+    margin-bottom: 15px;
+    color: #7f8c8d;
+}
+
+.result-item {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.result-title {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.result-title a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+.result-title a:hover {
+    text-decoration: underline;
+}
+
+.result-snippet {
+    margin-bottom: 10px;
+}
+
+.result-meta {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.result-category, .result-tag {
+    background-color: #ecf0f1;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.highlight {
+    background-color: #fffacd;
+    padding: 0 2px;
+}
+
+/* Pagination */
+#pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-button.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.pagination-button:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+
+/* Footer */
+footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#response-time {
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .results-container {
+        flex-direction: column;
+    }
+    
+    .facets-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
