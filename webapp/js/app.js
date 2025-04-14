@@ -45,6 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+// Event listener for form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('upload-document');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log("Starting the indexing");
+            indexDocumentToSolr();
+        });
+    }
+});
+
+
 // Functions
 function debounce(func, delay) {
     let timeout;
@@ -55,6 +69,169 @@ function debounce(func, delay) {
         timeout = setTimeout(() => func.apply(context, args), delay);
     };
 }
+
+// Function to handle file upload and Solr indexing with PDF.js support
+function indexDocumentToSolr() {
+    // Get the form element
+    const form = document.getElementById('upload-document');
+    const fileInput = form.querySelector('input[type="file"]');
+    
+    // Check if a file is selected
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to upload");
+        return false;
+    }
+    
+    const file = fileInput.files[0];
+    const fileName = file.name;
+    
+    // Show loading indicator
+    const statusElement = document.getElementById('upload-status');
+    if (statusElement) {
+        statusElement.textContent = "Processing and indexing document...";
+    }
+    
+    // Different handling based on file type
+    if (file.type === 'application/pdf') {
+        // Handle PDF files with PDF.js
+        processPdfFile(file, fileName, SOLR_URL, statusElement);
+    } else {
+        // Handle other file types directly
+        processTextFile(file, fileName, SOLR_URL, statusElement);
+    }
+    
+    return false; // Prevent form submission
+}
+
+// Function to process and index a PDF file
+function processPdfFile(file, fileName, solr_url, statusElement) {
+    const fileReader = new FileReader();
+    
+    fileReader.onload = function(event) {
+        const typedArray = new Uint8Array(event.target.result);
+        
+        // Load the PDF with PDF.js
+        pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+            console.log(`PDF loaded: ${fileName}, pages: ${pdf.numPages}`);
+            
+            // Array to store all page text
+            const pagesPromises = [];
+            
+            // Extract text from each page
+            for (let i = 1; i <= pdf.numPages; i++) {
+                pagesPromises.push(getPageText(pdf, i));
+            }
+            
+            // Combine all page text and send to Solr
+            Promise.all(pagesPromises).then(function(pagesText) {
+                const extractedContent = pagesText.join('\n');
+                console.log(`Extracted ${extractedContent.length} characters from PDF`);
+                
+                // Create a document object that matches your schema
+                const doc = {
+                    'id': fileName,
+                    'content': extractedContent,         // Using 'content' instead of 'content_txt'
+                    'title': fileName,                   // Adding title from the filename
+                    'last_modified': new Date().toISOString() // Adding last_modified date
+                };
+                
+                indexDocToSolr(doc, fileName, solr_url, statusElement);
+            });
+        }).catch(function(error) {
+            console.error(`Error processing PDF: ${error}`);
+            if (statusElement) {
+                statusElement.textContent = "Error processing PDF.";
+            }
+            alert(`Failed to process PDF: ${error.message}`);
+        });
+    };
+    
+    fileReader.onerror = function() {
+        console.error(`Failed to read file: ${fileReader.error}`);
+        if (statusElement) {
+            statusElement.textContent = "Error reading file.";
+        }
+        alert("Failed to read file.");
+    };
+    
+    fileReader.readAsArrayBuffer(file);
+}
+
+// Function to extract text from a specific PDF page
+function getPageText(pdf, pageNumber) {
+    return pdf.getPage(pageNumber).then(function(page) {
+        return page.getTextContent().then(function(textContent) {
+            // Concatenate the text items into a string
+            return textContent.items.map(item => item.str).join(' ');
+        });
+    });
+}
+
+// Function to process and index a text file
+function processTextFile(file, fileName, solr_url, statusElement) {
+    const reader = new FileReader();
+    
+    reader.onload = function(event) {
+        const textContent = event.target.result;
+        
+        // Create document object that matches your schema
+        const doc = {
+            'id': fileName,
+            'content': textContent,              // Using 'content' instead of 'content_txt'
+            'title': fileName,                   // Adding title from the filename
+            'last_modified': new Date().toISOString() // Adding last_modified date
+        };
+        
+        indexDocToSolr(doc, fileName, solr_url, statusElement);
+    };
+    
+    reader.onerror = function() {
+        console.error(`Failed to read file: ${reader.error}`);
+        if (statusElement) {
+            statusElement.textContent = "Error reading file.";
+        }
+        alert("Failed to read file.");
+    };
+    
+    reader.readAsText(file);
+}
+
+// Function to index a document to Solr
+function indexDocToSolr(doc, fileName, solr_url, statusElement) {
+    console.log("Sending document to Solr:", doc);
+    
+    // Send to Solr for indexing
+    fetch(`${solr_url}/update?commit=true`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([doc])
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`HTTP error! Status: ${response.status}, Details: ${text}`);
+            });
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log(`Indexed ${fileName}: Success`, data);
+        if (statusElement) {
+            statusElement.textContent = "Document successfully indexed!";
+        }
+        alert("Document has been successfully indexed!");
+    })
+    .catch(error => {
+        console.error(`Error indexing ${fileName}:`, error);
+        if (statusElement) {
+            statusElement.textContent = "Error indexing document. See console for details.";
+        }
+        alert("Failed to index document. Error: " + error.message);
+    });
+}
+
 
 async function handleSuggestions() {
     const query = searchInput.value.trim();
@@ -102,6 +279,78 @@ function renderSuggestions(suggestions) {
     });
 }
 
+document.getElementById('file-upload').addEventListener('change', function(e) {
+    const fileName = e.target.files[0] ? e.target.files[0].name : '';
+    document.getElementById('file-name').textContent = fileName;
+    
+    // Enable/disable the upload button based on file selection
+    document.getElementById('upload-button').disabled = !fileName;
+});
+
+// Handle drag and drop
+const dropArea = document.querySelector('.file-input-label');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight() {
+    dropArea.style.backgroundColor = '#d1ecf1';
+    dropArea.style.borderColor = '#0c5460';
+}
+
+function unhighlight() {
+    dropArea.style.backgroundColor = '#e9ecef';
+    dropArea.style.borderColor = '#ced4da';
+}
+
+dropArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length) {
+        document.getElementById('file-upload').files = files;
+        document.getElementById('file-name').textContent = files[0].name;
+        document.getElementById('upload-button').disabled = false;
+    }
+}
+
+// Update status styling based on content
+const statusElement = document.getElementById('upload-status');
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.type === 'characterData' || mutation.type === 'childList') {
+            const content = statusElement.textContent.toLowerCase();
+            
+            statusElement.classList.remove('status-processing', 'status-success', 'status-error', 'loading');
+            
+            if (content.includes('processing') || content.includes('uploading')) {
+                statusElement.classList.add('status-processing', 'loading');
+            } else if (content.includes('success')) {
+                statusElement.classList.add('status-success');
+            } else if (content.includes('error') || content.includes('failed')) {
+                statusElement.classList.add('status-error');
+            }
+        }
+    });
+});
+
+observer.observe(statusElement, { childList: true, characterData: true, subtree: true });
 async function performSearch() {
     // Display loading state
     searchResults.innerHTML = '<div class="loading">Loading results...</div>';
@@ -136,6 +385,7 @@ async function performSearch() {
     const startTime = performance.now();
     
     try {
+        console.log(`Fetching ${url}`);
         const response = await fetch(url);
         const data = await response.json();
         

@@ -15,13 +15,18 @@ if ! command -v siege &> /dev/null; then
     exit 1
 fi
 
+echo "$BASE_DIR"
+echo "$RESULTS_DIR"
+echo "$URLS_FILE"
+
+
 # Run tests with different concurrency levels
-for CONCURRENCY in 10 20 50 100 200; do
+for CONCURRENCY in 1, 5, 10, 100; do
     echo "Running benchmark with concurrency level: $CONCURRENCY"
     RESULTS_FILE="$RESULTS_DIR/siege_results_${CONCURRENCY}_${TIMESTAMP}.txt"
     
     # Run siege for 60 seconds
-    siege -c $CONCURRENCY -t 60S -f $URLS_FILE -q -l -m "$RESULTS_FILE.log" > $RESULTS_FILE
+    siege -c $CONCURRENCY -D -t 60S -f $URLS_FILE -q -l -m "$RESULTS_FILE.log" > $RESULTS_FILE
     
     # Extract the QPS (transactions per second)
     QPS=$(grep "Transaction rate:" $RESULTS_FILE | awk '{print $3}')
@@ -31,4 +36,4 @@ for CONCURRENCY in 10 20 50 100 200; do
     echo "$CONCURRENCY,$QPS,$RESPONSE_TIME" >> "$RESULTS_DIR/qps_summary_${TIMESTAMP}.csv"
 done
 
-echo "Benchmarking complete! Results saved in $RESULTS_DIR"
+echo "Benchmarking complete! Results saved in $RESULTS_DIR" 

@@ -44,6 +44,28 @@
         </div>
     </div>
     
+    <h2>Upload Document</h2>
+    <div class="upload-container">
+        <h2>Upload Document</h2>
+        <form id="upload-document" class="upload-form">
+            <div class="file-input-container">
+                <label for="file-upload" class="file-input-label">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Choose a file or drag it here</span>
+                </label>
+                <input id="file-upload" type="file" name="file" class="file-input" required>
+                <div id="file-name" class="file-name"></div>
+            </div>
+            <button type="submit" class="upload-button" id="upload-button" disabled>Upload and Index</button>
+        </form>
+    
+        <div id="upload-status" class="upload-status"></div>
+    </div>
+
     <footer>
         <div class="container">
             <p>Solr Search Engine Project - Performance Benchmark Version</p>
@@ -51,6 +73,11 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.5.141/pdf.min.js"></script>
+    <script>
+    // Set the workerSrc property to use the PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.5.141/pdf.worker.min.js';
+    </script>
     <script src="js/app.js"></script>
 </body>
 </html>
