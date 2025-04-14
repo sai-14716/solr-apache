@@ -39,7 +39,7 @@
   <field name="category" type="string" indexed="true" stored="true" multiValued="true"/>
   <field name="last_modified" type="date" indexed="true" stored="true"/>
   
-  <!-- Dynamic fields for metadata -->
+  <!-- Dynamic fields for metadata -->  
   <dynamicField name="metatag_*" type="text_general" indexed="true" stored="true"/>
   
   <!-- Field for faceted search -->

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- solrconfig.xml - Configuration for the search core -->
 <config>
+  <luceneMatchVersion>9.8.0</luceneMatchVersion>
   <!-- Data directory for this core -->
   <dataDir>${solr.data.dir:}</dataDir>
   
@@ -26,7 +27,7 @@
       <!-- Highlighting configuration -->
       <str name="hl">on</str>
       <str name="hl.fl">title,content</str>
-      <str name="hl.snippets">3</str>
+      <str name="hl.snippets">3</str> 
       <str name="hl.fragsize">200</str>
       
       <!-- Faceting configuration -->
