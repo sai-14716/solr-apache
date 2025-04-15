@@ -7,11 +7,11 @@ if [ -z "$1" ]; then
 fi
 
 # Use the provided URL as the base URL.
-BASE_URL="$1"
+BASE_URL="http://localhost:8983/solr"
 CORE_URL="${BASE_URL}/searchcore"  # Adjust this if necessary.
 OUTPUT_DIR="./benchmark_results"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-OUTPUT_FILE="${OUTPUT_DIR}/siege_results_${TIMESTAMP}.json"
+OUTPUT_FILE="${OUTPUT_DIR}/siege_results.json"
 QUERY_ENDPOINT="/select?q=TCP"
 
 
@@ -19,9 +19,9 @@ mkdir -p $OUTPUT_DIR
 
 
 # Array of concurrent users to test
-CONCURRENT_USERS=(1 5 10 25 50 100)
+CONCURRENT_USERS=(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 51 53 57 59 61 67 71)
 # Test duration in seconds
-DURATION=2
+DURATION=10
 
 echo "Starting benchmark tests against $SOLR_URL"
 echo "Results will be saved to $OUTPUT_FILE"

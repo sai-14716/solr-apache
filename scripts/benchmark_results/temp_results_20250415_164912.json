@@ -1,0 +1,75 @@
+{
+  "benchmark_timestamp": "2025-04-15T11:19:12Z",
+  "solr_url": "",
+  "results": [
+    {
+      "concurrent_users": 1,
+      "duration_seconds": 2,
+      "transactions": 			10,
+      "availability": 			100.00,
+      "elapsed_time": 			1.28,
+      "response_time": 		0.12,
+      "transaction_rate": 		7.81,
+      "throughput": 			4.82,
+      "concurrency": 			0.96,
+      "successful_transactions": 	10,
+      "failed_transactions": 		0
+    }
+    ,
+    {
+      "concurrent_users": 5,
+      "duration_seconds": 2,
+      "transactions": 			53,
+      "availability": 			100.00,
+      "elapsed_time": 			1.95,
+      "response_time": 		0.18,
+      "transaction_rate": 		27.18,
+      "throughput": 			16.79,
+      "concurrency": 			4.76,
+      "successful_transactions": 	53,
+      "failed_transactions": 		0
+    }
+    ,
+    {
+      "concurrent_users": 10,
+      "duration_seconds": 2,
+      "transactions": 			73,
+      "availability": 			100.00,
+      "elapsed_time": 			1.96,
+      "response_time": 		0.25,
+      "transaction_rate": 		37.24,
+      "throughput": 			23.00,
+      "concurrency": 			9.32,
+      "successful_transactions": 	73,
+      "failed_transactions": 		0
+    }
+    ,
+    {
+      "concurrent_users": 25,
+      "duration_seconds": 2,
+      "transactions": 			69,
+      "availability": 			100.00,
+      "elapsed_time": 			1.96,
+      "response_time": 		0.58,
+      "transaction_rate": 		35.20,
+      "throughput": 			21.74,
+      "concurrency": 			20.52,
+      "successful_transactions": 	69,
+      "failed_transactions": 		0
+    }
+    ,
+    {
+      "concurrent_users": 50,
+      "duration_seconds": 2,
+      "transactions": 			55,
+      "availability": 			100.00,
+      "elapsed_time": 			1.93,
+      "response_time": 		1.13,
+      "transaction_rate": 		28.50,
+      "throughput": 			17.60,
+      "concurrency": 			32.11,
+      "successful_transactions": 	55,
+      "failed_transactions": 		0
+    }
+  ]
+}
