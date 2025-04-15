@@ -1,0 +1,84 @@
+{
+  "benchmark_timestamp": "2025-04-15T10:53:19Z",
+  "solr_url": "",
+  "results": [
+    {
+      "concurrent_users": 1,
+      "duration_seconds": 2,
+      "transactions": 14,
+      "availability": 100.00,
+      "elapsed_time": 1.48,
+      "response_time": 0.10,
+      "transaction_rate": 9.46,
+      "throughput": 5.84,
+      "concurrency": 0.97,
+      "successful_transactions": 14,
+      "failed_transactions": 0
+    },
+    {
+      "concurrent_users": 5,
+      "duration_seconds": 2,
+      "transactions": 57,
+      "availability": 100.00,
+      "elapsed_time": 1.95,
+      "response_time": 0.16,
+      "transaction_rate": 29.23,
+      "throughput": 18.05,
+      "concurrency": 4.71,
+      "successful_transactions": 57,
+      "failed_transactions": 0
+    },
+    {
+      "concurrent_users": 10,
+      "duration_seconds": 2,
+      "transactions": 77,
+      "availability": 100.00,
+      "elapsed_time": 1.96,
+      "response_time": 0.24,
+      "transaction_rate": 39.29,
+      "throughput": 24.26,
+      "concurrency": 9.30,
+      "successful_transactions": 77,
+      "failed_transactions": 0
+    },
+    {
+      "concurrent_users": 25,
+      "duration_seconds": 2,
+      "transactions": 81,
+      "availability": 100.00,
+      "elapsed_time": 1.95,
+      "response_time": 0.53,
+      "transaction_rate": 41.54,
+      "throughput": 25.65,
+      "concurrency": 21.81,
+      "successful_transactions": 81,
+      "failed_transactions": 0
+    },
+    {
+      "concurrent_users": 50,
+      "duration_seconds": 2,
+      "transactions": 63,
+      "availability": 100.00,
+      "elapsed_time": 1.94,
+      "response_time": 1.08,
+      "transaction_rate": 32.47,
+      "throughput": 20.05,
+      "concurrency": 35.02,
+      "successful_transactions": 63,
+      "failed_transactions": 0
+    },
+    {
+      "concurrent_users": 100,
+      "duration_seconds": 2,
+      "transactions": 0,
+      "availability": 0.00,
+      "elapsed_time": 1.91,
+      "response_time": 0.00,
+      "transaction_rate": 0.00,
+      "throughput": 0.00,
+      "concurrency": 0.00,
+      "successful_transactions": 0,
+      "failed_transactions": 0
+    }
+  ]
+}

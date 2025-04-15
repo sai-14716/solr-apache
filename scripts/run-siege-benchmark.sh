@@ -1,6 +1,4 @@
 #!/bin/bash
-# Modified siege-benchmark.sh to produce structured output for visualization
-
 # Check if SOLR_URL is provided
 if [ -z "$1" ]; then
   echo "Usage: $0 <SOLR_URL>"
@@ -8,13 +6,17 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-SOLR_URL=http://localhost:8983/solr/searchcore
+# Use the provided URL as the base URL.
+BASE_URL="$1"
+CORE_URL="${BASE_URL}/searchcore"  # Adjust this if necessary.
 OUTPUT_DIR="./benchmark_results"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 OUTPUT_FILE="${OUTPUT_DIR}/siege_results_${TIMESTAMP}.json"
+QUERY_ENDPOINT="/select?q=TCP"
 
-# Create output directory if it doesn't exist
+
 mkdir -p $OUTPUT_DIR
+
 
 # Array of concurrent users to test
 CONCURRENT_USERS=(1 5 10 25 50 100)
@@ -37,19 +39,24 @@ first_entry=true
 for USERS in "${CONCURRENT_USERS[@]}"; do
   echo "Running test with $USERS concurrent users for $DURATION seconds..."
   
-  # Run siege and capture output
-  SIEGE_OUTPUT=$(siege -c $USERS -t${DURATION}S -b "$SOLR_URL/select?q=TCP")
+  # Run siege and capture both stdout and stderr
+  SIEGE_OUTPUT=$(siege -c $USERS -t${DURATION}S -b "${CORE_URL}${QUERY_ENDPOINT}" 2>&1)
+
+# echo "Siege output for ${USERS} users:"
+# echo "$SIEGE_OUTPUT"
+
+
   
   # Extract key metrics using grep and awk, and ensure they're clean numbers
-  TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep "Transactions:" | awk '{print $2}' | tr -d ',')
-  AVAILABILITY=$(echo "$SIEGE_OUTPUT" | grep "Availability:" | awk '{print $2}' | tr -d '%,')
-  ELAPSED_TIME=$(echo "$SIEGE_OUTPUT" | grep "Elapsed time:" | awk '{print $3}' | tr -d ',')
-  RESPONSE_TIME=$(echo "$SIEGE_OUTPUT" | grep "Response time:" | awk '{print $3}' | tr -d ',')
-  TRANSACTION_RATE=$(echo "$SIEGE_OUTPUT" | grep "Transaction rate:" | awk '{print $3}' | tr -d ',')
-  THROUGHPUT=$(echo "$SIEGE_OUTPUT" | grep "Throughput:" | awk '{print $2}' | tr -d ',')
-  CONCURRENCY=$(echo "$SIEGE_OUTPUT" | grep "Concurrency:" | awk '{print $2}' | tr -d ',')
-  SUCCESSFUL_TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep "Successful transactions:" | awk '{print $3}' | tr -d ',')
-  FAILED_TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep "Failed transactions:" | awk '{print $3}' | tr -d ',')
+  TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep -i '"transactions":' | awk -F: '{print $2}' | tr -d ', ')
+AVAILABILITY=$(echo "$SIEGE_OUTPUT" | grep -i '"availability":' | awk -F: '{print $2}' | tr -d ', ')
+ELAPSED_TIME=$(echo "$SIEGE_OUTPUT" | grep -i '"elapsed_time":' | awk -F: '{print $2}' | tr -d ', ')
+RESPONSE_TIME=$(echo "$SIEGE_OUTPUT" | grep -i '"response_time":' | awk -F: '{print $2}' | tr -d ', ')
+TRANSACTION_RATE=$(echo "$SIEGE_OUTPUT" | grep -i '"transaction_rate":' | awk -F: '{print $2}' | tr -d ', ')
+THROUGHPUT=$(echo "$SIEGE_OUTPUT" | grep -i '"throughput":' | awk -F: '{print $2}' | tr -d ', ')
+CONCURRENCY=$(echo "$SIEGE_OUTPUT" | grep -i '"concurrency":' | awk -F: '{print $2}' | tr -d ', ')
+SUCCESSFUL_TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep -i '"successful_transactions":' | awk -F: '{print $2}' | tr -d ', ')
+FAILED_TRANSACTIONS=$(echo "$SIEGE_OUTPUT" | grep -i '"failed_transactions":' | awk -F: '{print $2}' | tr -d ', ')
   
   # Check if any values are empty and set to 0 if they are
   TRANSACTIONS=${TRANSACTIONS:-0}
@@ -108,7 +115,7 @@ else
 fi
 
 echo "Benchmark complete. Results saved to $OUTPUT_FILE"
-echo "You can now visualize these results with: python visualize-results.py $OUTPUT_FILE"
+echo "You can now visualize these results with: python3 visualize.py $OUTPUT_FILE"
 
 # Echo the content of the JSON file for debugging
 echo "JSON file content preview:"
